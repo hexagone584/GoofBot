@@ -16,17 +16,17 @@ public class TestDrive extends OpMode {
     @Override
     public void init() {
         FL = hardwareMap.dcMotor.get("FrontLeftMotor");
-//        DcMotor FR = hardwareMap.dcMotor.get("FrontRightMotor");
-//        DcMotor BL = hardwareMap.dcMotor.get("BackLeftMotor");
-//        DcMotor BR = hardwareMap.dcMotor.get("BackLeftMotor");
+        FR = hardwareMap.dcMotor.get("FrontRightMotor");
+        BL = hardwareMap.dcMotor.get("BackLeftMotor");
+        BR = hardwareMap.dcMotor.get("BackRightMotor");
     }
 
     @Override
     public void loop() {
 
         FL.setPower((-gamepad1.left_stick_y)-gamepad2.left_stick_x);
-//        BL.setPower(-gamepad1.left_stick_y);
-//        FR.setPower(-gamepad1.left_stick_y);
-//        BR.setPower(-gamepad1.left_stick_y);
+        BL.setPower(-(gamepad1.left_stick_y)-gamepad2.left_stick_x);
+        FR.setPower(-gamepad1.left_stick_y+gamepad2.left_stick_x);
+        BR.setPower(-gamepad1.left_stick_y+gamepad2.left_stick_x);
     }
 }
