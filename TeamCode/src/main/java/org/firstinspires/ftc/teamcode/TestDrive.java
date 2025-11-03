@@ -29,6 +29,13 @@ public class TestDrive extends OpMode {
         double y = gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
+        FL.setPower((y-x-rx));
+        BL.setPower((y+x-rx));
+        FR.setPower((y+x+rx));
+        BR.setPower((y-x+rx));
+        double y = gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing;
+        double rx = gamepad1.right_stick_x;
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         FL.setPower((y-x-rx) / denominator);
         BL.setPower((y+x-rx) / denominator);
@@ -57,6 +64,8 @@ public class TestDrive extends OpMode {
         // Denominator is the largest motor power (absolute value) or 1
 // This ensures all the powers maintain the same ratio, but only when
 // at least one is out of the range [-1, 1]
+
+
 
     }
 }
