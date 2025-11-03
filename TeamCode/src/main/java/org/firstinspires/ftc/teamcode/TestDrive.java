@@ -27,13 +27,12 @@ public class TestDrive extends OpMode {
     @Override
     public void loop() {
         double y = gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
+        double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x;
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        FL.setPower((y-x-rx) / denominator);
-        BL.setPower((y+x-rx) / denominator);
-        FR.setPower((y+x+rx) / denominator);
-        BR.setPower((y-x+rx) / denominator);
+        FL.setPower((y-x-rx));
+        BL.setPower((y+x-rx));
+        FR.setPower((y+x+rx));
+        BR.setPower((y-x+rx));
         //joypad thing
 //        FL.setPower((gamepad1.dpad_up ? 1d : 0d) + (gamepad1.dpad_left ? 1d : 0d));
 //        BL.setPower((gamepad1.dpad_up ? 1d : 0d) + (gamepad1.dpad_left ? 1d : 0d));
