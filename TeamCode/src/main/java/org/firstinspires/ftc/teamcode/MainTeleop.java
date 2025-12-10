@@ -15,7 +15,10 @@ public class MainTeleop extends OpMode {
     DcMotor BR;
     DcMotor Flywheel;
     Servo Gate1;
+    Double power = 0.0;
     boolean manualServo = false;
+    Double gatePosition;
+
     //used to assign the motors based off of our Control Hub Schematics
     @Override
     public void init() {
@@ -37,6 +40,9 @@ public class MainTeleop extends OpMode {
 
     }
 
+    //
+    //MAIN PROGRAM
+    //
     @Override
     public void loop() {
         //takes in input of joysticks
@@ -59,29 +65,38 @@ public class MainTeleop extends OpMode {
             manualServo = false;
         }
 
-        if (gamepad1.dpadRightWasPressed()) {
-            manualServo = true;
+         gatePosition = Gate1.getPosition();
+
+        //driver gets these info
+        telemetry.addLine("Gate1 Position:");
+        telemetry.addLine(gatePosition.toString());
+        telemetry.addLine("Flywheel power");
+        telemetry.addLine(power.toString());
+
+        if (gamepad1.dpadDownWasPressed()) {
+            Gate1.setPosition(.85);
         }
 
         if (gamepad1.dpadUpWasPressed()) {
-            Gate1.setPosition(1); //PLACEHOLDER VALUE
+            Gate1.setPosition(.50);
         }
 
-        if (gamepad1.dpadDownWasPressed()) {
-            Gate1.setPosition(0); //PLACEHOLDER VALUE
-        }
-        //flywheel can reverse and go forward depending on left trigger or right trigger respectively
-        if (!manualServo) {
-            Flywheel.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+        if (gamepad1.xWasPressed()) {
+            power += .01;
         }
 
-        //now our flywheel can't automagically power when it's nearby so the driver is left to you know
-        //power it up
+        if (gamepad1.aWasPressed()) {
+            power -= .01;
+        }
+
         if (gamepad1.bWasPressed()) {
-            Flywheel.setPower(.65);
+            power = .0;
         }
+
         if (gamepad1.yWasPressed()) {
-            Flywheel.setPower(0);
+            power = .50;
         }
+
+        Flywheel.setPower(power);
     }
 }

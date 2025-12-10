@@ -17,16 +17,6 @@ public class AutoCode extends LinearOpMode {
     Servo Gate1;
     ElapsedTime runtime;
 
-    //SPECS!!!!
-    static final double ticksPerRev = 384.5; //see goBilDA 5203 435RPM spec sheets
-    static final double wheelCircumference = Math.PI * 3.77953; //we're using inches, NOT mm
-    static final double ticksPerInch = ticksPerRev / wheelCircumference; //meaning that ~32.38 ticks accounts for one inch traveled
-
-    //helper function convert inches to 435RPM encoder ticks
-    public int inchesToTicks(double inches) {
-        return (int) (inches * ticksPerInch); //they'll truncate some floating points, but I think that's negligible for what we're doing
-    }
-
     //helper function to convert direction into power values (taken from our teleop)
     public void setDirectionPower(String direction) {
         double y = 0;
@@ -54,32 +44,19 @@ public class AutoCode extends LinearOpMode {
         FR.setPower((y+x+rx) / denominator);
         BR.setPower((y-x+rx) / denominator);
     }
+
+
     //function to abstract commands (aka im too lazy to copy and paste)
-    public void Drive(String direction, int distance, double power) {
-        distance = inchesToTicks(distance);
+    public void Drive(String direction, long milliseconds) {
+        setDirectionPower(direction);
 
-        FL.setTargetPosition(FL.getCurrentPosition() + distance);
-        FR.setTargetPosition(FR.getCurrentPosition() + distance);
-        BL.setTargetPosition(BL.getCurrentPosition() + distance);
-        BR.setTargetPosition(BR.getCurrentPosition() + distance);
-
-        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        switch (direction) {
-            case "forward":
-                setDirectionPower("forward");
-            case "back":
-            case "left":
-            case "right":
-            case "rotateRight":
-            case "rotateLeft":
-
+        try {
+            Thread.sleep(milliseconds);
+        }
+        catch (Exception e) {
+            System.out.println(e);
         }
 
-        while(opModeIsActive() && (FL.isBusy() || FR.isBusy() || BL.isBusy() || BR.isBusy())){ }
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
@@ -102,26 +79,8 @@ public class AutoCode extends LinearOpMode {
 
         waitForStart(); //needs to continuously wait I suppose
 
-        //Gate1 = hardwareMap.servo.get("Gate1");
-
-        FL.setPower(-.5);
-        FR.setPower(-.5);
-        BL.setPower(-.5);
-        BR.setPower(-.5);
         if (opModeIsActive()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) { }
-
-        }
-        FL.setPower(0);
-        FR.setPower(0);
-        BL.setPower(0);
-        BR.setPower(0);
-        if (opModeIsActive()) {
-            Drive("forward",2,.5);
-            Drive("right",1,1);
-            Drive("forward",9,1);
+            Drive("foward")
         }
     }
 }
