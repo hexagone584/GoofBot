@@ -1,13 +1,21 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutoCode")
 public class AutoCode extends LinearOpMode {
+    //helper sleep function idk
+    public void mimi(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
     // instantiate our motors and servos
     DcMotor FL;
     DcMotor FR;
@@ -15,52 +23,50 @@ public class AutoCode extends LinearOpMode {
     DcMotor BR;
     DcMotor Flywheel;
     Servo Gate1;
-    ElapsedTime runtime;
-
-    //helper function to convert direction into power values (taken from our teleop)
-    public void setDirectionPower(String direction) {
-        double y = 0;
-        double x = 0;
-        double rx = 0;
-        switch (direction) {
-            case "forward":
-                y = 1;
-            case "back":
-                y = -1;
-            case "left":
-                x = -1;
-            case "right":
-                x = 1;
-            case "rotateRight":
-                rx = 1;
-            case "rotateLeft":
-                rx = -1;
-        }
-
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        FL.setPower((y-x-rx) / denominator);
-        BL.setPower((y+x-rx) / denominator);
-        FR.setPower((y+x+rx) / denominator);
-        BR.setPower((y-x+rx) / denominator);
-    }
 
 
     //function to abstract commands (aka im too lazy to copy and paste)
-    public void Drive(String direction, long milliseconds) {
-        setDirectionPower(direction);
+    public void Drive(String direction, long seconds, double power) {
+        double y = 0.0;
+        double x = 0.0;
+        double rx = 0.0;
 
-        try {
-            Thread.sleep(milliseconds);
+        switch (direction) {
+            case "forward":
+                y = 1.0;
+                break;
+            case "backward":
+                y = -1.0;
+                break;
+            case "left":
+                x = -1.0;
+                break;
+            case "right":
+                x = 1.0;
+                break;
+            case "rotateRight":
+                rx = 1.0;
+                break;
+            case "rotateLeft":
+                rx = -1.0;
+                break;
         }
-        catch (Exception e) {
-            System.out.println(e);
-        }
+
+
+        FL.setPower((y-x-rx) * power);
+        BL.setPower((y+x-rx) * power);
+        FR.setPower((y+x+rx) * power);
+        BR.setPower((y-x+rx) * power);
+
+        mimi((long) seconds * 1000);
 
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
+
+        //this is to make sure it stops before doing other commands
+        mimi((long) 1000);
     }
 
 
@@ -72,15 +78,29 @@ public class AutoCode extends LinearOpMode {
         FR = hardwareMap.dcMotor.get("FrontRightMotor");
         BL = hardwareMap.dcMotor.get("BackLeftMotor");
         BR = hardwareMap.dcMotor.get("BackRightMotor");
+        Gate1 = hardwareMap.servo.get("Gate1");
         Flywheel = hardwareMap.dcMotor.get("FlywheelMotor");
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
         Flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        Gate1.setPosition(.85); //resets to correct position
         waitForStart(); //needs to continuously wait I suppose
 
         if (opModeIsActive()) {
-            Drive("foward")
+            Flywheel.setPower(.55);
+            mimi((long) 1500);
+
+            for (int i = 0; i < 4; i++) {
+                Gate1.setPosition(.76);
+                mimi((long) 300);
+                Gate1.setPosition(.85);
+                mimi((long) 750);
+            }
+
+            Drive("forward", (long) 1, .35);
+            Drive("left", (long) 1, .35);
+            Gate1.setPosition(.85);
         }
     }
 }
