@@ -17,7 +17,7 @@ public class MainTeleop extends OpMode {
     DcMotor Flywheel;
     Servo Gate1;
     Double bleh = .84;
-    Double power = 0.0;
+    Double power = .55;
     boolean debounce = false;
 
     @Override
@@ -27,9 +27,8 @@ public class MainTeleop extends OpMode {
         BL = hardwareMap.dcMotor.get("BackLeftMotor");
         BR = hardwareMap.dcMotor.get("BackRightMotor");
         Flywheel = hardwareMap.dcMotor.get("FlywheelMotor");
-        //test
-        FL.setDirection(DcMotorSimple.Direction.REVERSE);
-        BL.setDirection(DcMotorSimple.Direction.REVERSE);
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.REVERSE);
         Flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         Gate1 = hardwareMap.servo.get("Gate1");
 
@@ -39,15 +38,15 @@ public class MainTeleop extends OpMode {
 
     @Override
     public void loop() {
-        double y = Math.pow(gamepad1.left_stick_y,7);
-        double x = Math.pow(gamepad1.left_stick_x,7)*.9; // Counteract imperfect strafing
-        double rx = Math.pow(gamepad1.right_stick_x,7);
+        double y = gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x*.9; // Counteract imperfect strafing
+        double rx = gamepad1.right_stick_x;
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
-        FL.setPower((y-x-rx)/denominator / power);
-        BL.setPower((y+x-rx)/denominator / power);
-        FR.setPower((y+x+rx)/denominator / power);
-        BR.setPower((y-x+rx)/denominator / power);
+        FL.setPower((y-x-rx)/denominator);
+        BL.setPower((y+x-rx)/denominator);
+        FR.setPower((y+x+rx)/denominator);
+        BR.setPower((y-x+rx)/denominator);
 
         Double guh = Gate1.getPosition();
         Double pluh = Math.cbrt(gamepad1.left_stick_y);
@@ -61,7 +60,7 @@ public class MainTeleop extends OpMode {
             debounce = true;
             Gate1.setPosition(.76);
             try {
-                Thread.sleep(300);
+                Thread.sleep(500);
             }
             catch (Exception e) {
                 System.out.println(e);
@@ -93,7 +92,7 @@ public class MainTeleop extends OpMode {
         }
 
         if (gamepad1.yWasPressed()) {
-            power = .50;
+            power = .55;
         }
 
         if (gamepad1.left_bumper) {

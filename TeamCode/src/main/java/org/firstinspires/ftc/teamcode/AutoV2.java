@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutoCode")
-public class AutoCode extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutoV2")
+public class AutoV2 extends LinearOpMode {
+
+    public double powertorads(double power) {
+        return 6.525 * power - 0.2;
+    }
     //helper sleep function idk
     public void mimi(long milliseconds) {
         try {
@@ -25,7 +25,7 @@ public class AutoCode extends LinearOpMode {
     DcMotor FR;
     DcMotor BL;
     DcMotor BR;
-    DcMotorEx Flywheel;
+    DcMotor Flywheel;
     Servo Gate1;
 
 
@@ -78,35 +78,32 @@ public class AutoCode extends LinearOpMode {
     //unlike opMode, there is no said loop nor initiation, and it's run by one single function
     @Override
     public void runOpMode() {
-        Flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Flywheel.setVelocity();
         FL = hardwareMap.dcMotor.get("FrontLeftMotor");
         FR = hardwareMap.dcMotor.get("FrontRightMotor");
         BL = hardwareMap.dcMotor.get("BackLeftMotor");
         BR = hardwareMap.dcMotor.get("BackRightMotor");
         Gate1 = hardwareMap.servo.get("Gate1");
-        Flywheel = hardwareMap.get(DcMotorEx.class,"FlywheelMotor");
-        //Flywheel = hardwareMap.dcMotor.get("FlywheelMotor");
+        Flywheel = hardwareMap.dcMotor.get("FlywheelMotor");
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
         Flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Gate1.setPosition(.85); //resets to correct position
         waitForStart(); //needs to continuously wait I suppose
-        Flywheel.getVelocity();
+
         if (opModeIsActive()) {
-            Flywheel.setPower(.55);
+            Flywheel.setPower(.50);
             mimi((long) 1500);
 
-            for (int i = 0; i < 4; i++) {
-                Gate1.setPosition(.76);
-                mimi((long) 300);
+            for (int i = 0; i < 5; i++) {
+                Gate1.setPosition(.75);
+                mimi((long) 350);
                 Gate1.setPosition(.85);
-                mimi((long) 750);
+                mimi((long) 800);
             }
 
-            Drive("forward", (long) 1, .35);
-            Drive("left", (long) 1, .35);
+            Drive("forward", (long) 1, .30);
+            Drive("left", (long) 1, .30);
             Gate1.setPosition(.85);
         }
     }
