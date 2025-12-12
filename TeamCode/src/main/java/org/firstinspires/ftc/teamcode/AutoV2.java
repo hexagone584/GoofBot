@@ -1,16 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutoV2")
 public class AutoV2 extends LinearOpMode {
-
     public double powertorads(double power) {
         return 6.525 * power - 0.2;
     }
+
     //helper sleep function idk
     public void mimi(long milliseconds) {
         try {
@@ -25,7 +27,7 @@ public class AutoV2 extends LinearOpMode {
     DcMotor FR;
     DcMotor BL;
     DcMotor BR;
-    DcMotor Flywheel;
+    DcMotorEx Flywheel;
     Servo Gate1;
 
 
@@ -83,7 +85,7 @@ public class AutoV2 extends LinearOpMode {
         BL = hardwareMap.dcMotor.get("BackLeftMotor");
         BR = hardwareMap.dcMotor.get("BackRightMotor");
         Gate1 = hardwareMap.servo.get("Gate1");
-        Flywheel = hardwareMap.dcMotor.get("FlywheelMotor");
+        Flywheel = hardwareMap.get(DcMotorEx.class,"FlywheelMotor");
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
         Flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -92,7 +94,7 @@ public class AutoV2 extends LinearOpMode {
         waitForStart(); //needs to continuously wait I suppose
 
         if (opModeIsActive()) {
-            Flywheel.setPower(.50);
+            Flywheel.setVelocity(powertorads(.5));
             mimi((long) 1500);
 
             for (int i = 0; i < 5; i++) {
